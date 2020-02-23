@@ -11,31 +11,65 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+            android:id="@+id/tv_toolbar"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textAlignment="center" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/tv_timer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:padding="12dp"
+        android:text="Timer: "
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_90"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".90" />
 
     <View
         android:id="@+id/view_red"
         android:layout_width="0dp"
-        android:layout_height="160dp"
+        android:layout_height="0dp"
         android:background="@color/red"
+        app:layout_constraintBottom_toTopOf="@id/view_yellow"
         app:layout_constraintEnd_toStartOf="@id/view_blue"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/tv_timer" />
 
     <View
         android:id="@+id/view_blue"
         android:layout_width="0dp"
-        android:layout_height="160dp"
+        android:layout_height="0dp"
         android:background="@color/blue"
+        app:layout_constraintBottom_toTopOf="@id/view_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/view_red"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/tv_timer" />
 
     <View
         android:id="@+id/view_yellow"
         android:layout_width="0dp"
-        android:layout_height="160dp"
+        android:layout_height="0dp"
         android:background="@color/yellow"
+        app:layout_constraintBottom_toBottomOf="@id/gl_90"
         app:layout_constraintEnd_toStartOf="@id/view_green"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_red" />
@@ -43,9 +77,11 @@
     <View
         android:id="@+id/view_green"
         android:layout_width="0dp"
-        android:layout_height="160dp"
+        android:layout_height="0dp"
         android:background="@color/green"
+        app:layout_constraintBottom_toBottomOf="@id/gl_90"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/view_yellow"
         app:layout_constraintTop_toBottomOf="@id/view_red" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

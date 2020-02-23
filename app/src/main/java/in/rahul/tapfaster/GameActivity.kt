@@ -3,8 +3,9 @@ package `in`.rahul.tapfaster
 import android.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.util.Log
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_game.*
@@ -16,12 +17,15 @@ class GameActivity : AppCompatActivity() {
     var oldNum = 5
     var score = 0
     var boolViewClicked = true
-    var thread = Thread()
+    var countDown: CountDownTimer? = null
+    var boolGameLoop = true
+//    var thread = Thread()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        tv_toolbar.text = "Tap Faster"
         setSupportActionBar(toolbar)
 
         view_red.setOnClickListener {
@@ -32,7 +36,6 @@ class GameActivity : AppCompatActivity() {
         view_blue.setOnClickListener {
             boolViewClicked = true
             viewClicked(1)
-//            view_red.setBackgroundColor(ContextCompat.getColor(this, R.color.grey))
         }
 
         view_yellow.setOnClickListener {
@@ -43,7 +46,6 @@ class GameActivity : AppCompatActivity() {
         view_green.setOnClickListener {
             viewClicked(3)
             boolViewClicked = true
-//            backToOriginColor()
         }
         oneSecMethod()
     }
@@ -52,43 +54,64 @@ class GameActivity : AppCompatActivity() {
         boolViewClicked = false
         if (i == oldNum) {
             score++
-            toolbar.title = "You Current Score: $score"
+//            toolbar.title = "Score: $score"
+            tv_toolbar.text = "Score: $score"
         } else {
             alertDialog()
-//            toolbar.title  = "Loose"
         }
     }
 
     private fun oneSecMethod() {
-        thread = object : Thread(){
-            override fun run() {
-                while (!isInterrupted){
-                    try {
-                        sleep(1000)
-                        runOnUiThread {
-                            createRandomNumber()
-                            // oneSecMethod()
-                        }
-                    } catch (e: InterruptedException){
-                        currentThread().interrupt()
-                        e.printStackTrace()
-                    }
+        countDown = object : CountDownTimer(1000, 100) {
+            override fun onFinish() {
+                createRandomNumber()
+                if (boolGameLoop) {
+                    oneSecMethod()
                 }
             }
+
+            override fun onTick(millisUntilFinished: Long) {
+                tv_timer.text = "Timer: ${millisUntilFinished / 100}"
+                Log.e(
+                    "GameAct",
+                    "Timer: ${millisUntilFinished / 10} : ${millisUntilFinished / 100}"
+                )
+            }
+
         }
-        thread.start()
+        countDown?.start()
+
+//        thread = object : Thread() {
+//            override fun run() {
+//                while (!isInterrupted) {
+//                    try {
+//                        sleep(1000)
+//                        runOnUiThread {
+//                            createRandomNumber()
+//                            // oneSecMethod()
+//                        }
+//                    } catch (e: InterruptedException) {
+//                        currentThread().interrupt()
+//                        e.printStackTrace()
+//                    }
+//                }
+//            }
+//        }
+//        thread.start()
     }
 
     private fun checkUserClick() {
-        if (!boolViewClicked){
+        if (!boolViewClicked) {
 //            tv_hello.text = "You Loose"
             alertDialog()
         }
     }
 
     private fun alertDialog() {
-        thread.interrupt()
-        Thread.currentThread().interrupt()
+        boolGameLoop = false
+        countDown?.cancel()
+//        thread.interrupt()
+//        Thread.currentThread().interrupt()
         val builder = AlertDialog.Builder(this)
         val alertGameLayout: View = layoutInflater.inflate(R.layout.alert_game_layout, null)
         builder.setView(alertGameLayout)
@@ -101,8 +124,10 @@ class GameActivity : AppCompatActivity() {
         alertGameLayout.btn_reset.setOnClickListener {
             dialog.dismiss()
             score = 0
+            tv_toolbar.text = "Score: $score"
             boolViewClicked = true
             oneSecMethod()
+            boolGameLoop = true
         }
         dialog.show()
     }
@@ -137,8 +162,13 @@ class GameActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        thread.interrupt()
-        Thread.currentThread().interrupt()
+//        thread.interrupt()
+//        Thread.currentThread().interrupt()
         super.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        finish()
+        super.onBackPressed()
     }
 }
